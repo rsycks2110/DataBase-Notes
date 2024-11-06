@@ -55,66 +55,78 @@ class _MyHomePageState extends State<MyHomePage>{
   TextEditingController descController=TextEditingController();
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
-      appBar: AppBar(centerTitle: true,
-        title: Text("Shrinet NoteKeeper",style:TextStyle(fontSize: 25,fontWeight: FontWeight.w500,color: Colors.blue)),
+        appBar: AppBar(centerTitle: true,
+          title: Text("Shrinet NoteKeeper", style: TextStyle(
+              fontSize: 25, fontWeight: FontWeight.w500, color: Colors.blue)),
 
-      ),
+        ),
 
-      body:Consumer<DBProvider>(builder: (context,providerValue,child){
-        List<Map<String,dynamic>> mNotes= providerValue.getAllNotes();
-        return mNotes.isNotEmpty? Column(children: [
-          Expanded(
-            child: ListView.builder(
-                itemCount: mNotes.length,
-                itemBuilder: (context,index){
-                  return ListTile(
-                    onLongPress: (){
-                      showModalBottomSheet(context: context, builder: (context){
-                        titleController.text=mNotes[index][DataBaseHelper.User_Note_Title];
-                         descController.text=mNotes[index][DataBaseHelper.User_Note_Description];
+        body: Consumer<DBProvider>(builder: (context, providerValue, child) {
+          List<Map<String, dynamic>> mNotes = providerValue.getAllNotes();
+          return mNotes.isNotEmpty ? Column(children: [
+            Expanded(
+              child: ListView.builder(
+                  itemCount: mNotes.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      onLongPress: () {
+                        showModalBottomSheet(
+                            context: context, builder: (context) {
+                          titleController.text =
+                          mNotes[index][DataBaseHelper.User_Note_Title];
+                          descController.text =
+                          mNotes[index][DataBaseHelper.User_Note_Description];
 
-                        return newScreen(isUpdate:true,mID: mNotes[index][DataBaseHelper.User_Note_ID]);
-                      });
-                    },
-                    leading: Column(mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("${index+1}.",style: TextStyle(fontSize: 25,fontWeight: FontWeight.w500,color: Colors.red),),
-                        SizedBox(height: 17,)
-                      ],
-                    ),
-                    title: Text(mNotes[index][DataBaseHelper.User_Note_Title],style:TextStyle(fontSize:20,fontWeight:FontWeight.w400,color:Colors.green)),
-                    subtitle: Text(mNotes[index][DataBaseHelper.User_Note_Description],style: TextStyle(fontSize: 15,fontWeight: FontWeight.w300,color: Colors.orange),),
-                    trailing: IconButton(onPressed: () async{
-                      providerValue.deleteData(id: mNotes[index][DataBaseHelper.User_Note_ID]);
+                          return newScreen(isUpdate: true,
+                              mID: mNotes[index][DataBaseHelper.User_Note_ID]);
+                        });
+                      },
+                      leading: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("${index + 1}.", style: TextStyle(fontSize: 25,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.red),),
+                          SizedBox(height: 17,)
+                        ],
+                      ),
+                      title: Text(mNotes[index][DataBaseHelper.User_Note_Title],
+                          style: TextStyle(fontSize: 20,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.green)),
+                      subtitle: Text(
+                        mNotes[index][DataBaseHelper.User_Note_Description],
+                        style: TextStyle(fontSize: 15,
+                            fontWeight: FontWeight.w300,
+                            color: Colors.orange),),
+                      trailing: IconButton(onPressed: () async {
+                        providerValue.deleteData(
+                            id: mNotes[index][DataBaseHelper.User_Note_ID]);
+                      }, icon: Icon(Icons.delete)),
+                    );
+                  }),
+            )
+          ],) : Center(child: Text("Add Notes Here",
+              style: TextStyle(
+                  fontSize: 25, fontWeight: FontWeight.w500, color: Colors.red))
+          );
+        },),
 
-                    },icon: Icon(Icons.delete)),
-                  );
-                }),
-          )],): Center(child: Text("Add Notes Here",
-            style:TextStyle(fontSize: 25,fontWeight: FontWeight.w500,color: Colors.red))
-        );
-      },),
+        floatingActionButton: FloatingActionButton(
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.green,
+          onPressed: () {
+            return newScreen(isUpdate: false,mID: mNotes[index][DataBaseHelper.User_Note_ID]);
+          },
+          child: Icon(Icons.add),
 
-      floatingActionButton:FloatingActionButton(
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.green,
-        onPressed: () {
-  Navigator.push(context, MaterialPageRoute(builder: (context){
-    return newScreen(isUpdate:false,mID: mNotes[index][DataBaseHelper.User_Note_ID]);
-  }));
 
-      },
-      child: Icon(Icons.add),
-      )
-    );
+        ));
   }
-
   bool  isUpdate = false;
 
-   Widget newScreen({ bool isUpdate=false , int mID=0}){
+    Widget newScreen({ bool isUpdate=false , int mID=0}){
     return  Container(
       height: MediaQuery
           .of(context)
